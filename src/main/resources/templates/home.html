@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>RazorPay Demo</title>
+<style type="text/css">
+.button {
+	border-radius: 4px;
+	background-color: #f4511e;
+	border: none;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 28px;
+	padding: 20px;
+	width: 200px;
+	transition: all 0.5s;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.button span {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.5s;
+}
+
+.button span:after {
+	content: '\00bb';
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	right: -20px;
+	transition: 0.5s;
+}
+
+.button:hover span {
+	padding-right: 25px;
+}
+
+.button:hover span:after {
+	opacity: 1;
+	right: 0;
+}
+</style>
+</head>
+<body>
+	<button class="button" id="rzp-button1">
+		<span>Pay </span>
+	</button>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	<script>
+var options = {
+    "key": "rzp_test_YsN6D6PaRuAULD", // Enter the Key ID generated from the Dashboard
+    "amount": "1000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Hetasvi Ahir", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "order_Lsh1z3ji2lTlMy", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+    },
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        "name": "Dhanshree Shah", //your customer's name
+        "email": "dhanshree@example.com", 
+        "contact": "090990909"  //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Rysun"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.reason + "\n   " +   "Error code :   " + response.error.code + "\nDescription :   " + response.error.description + "\nStep : " +  response.error.step);
+       /*  alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step); */
+        //alert(response.error.reason);
+       /*  alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id); */
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+</body>
+
+</html>
